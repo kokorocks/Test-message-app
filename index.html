@@ -1,90 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>PeerJS Messaging App</title>
-    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.1/dist/peerjs.min.js"></script>
-    <style>
-        #messages {
-            border: 1px solid #ccc;
-            height: 200px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-        }
-        #messageInput {
-            width: 80%;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeerJS Chat</title>
 </head>
 <body>
-    <h1>PeerJS Messaging App</h1>
-    <p>Your Peer ID: <span id="peerId"></span></p>
+    <h1>PeerJS Chat</h1>
+    <input type="text" id="peer-id" placeholder="Enter peer ID">
+    <button onclick="connect()">Connect</button>
     <div id="messages"></div>
-    <input id="messageInput" type="text" placeholder="Type a message..." />
-    <button id="sendButton">Send</button>
+    <input type="text" id="message" placeholder="Enter message">
+    <button onclick="sendMessage()">Send</button>
 
-    <script>
-        // Create a new Peer instance and handle the ID
-        const peer = new Peer();
-
-        // Get the peer ID element
-        const peerIdSpan = document.getElementById('peerId');
-
-        // Display the peer ID when it's available
-        peer.on('open', id => {
-            console.log(`Your Peer ID is: ${id}`); // Log the ID to the console
-            peerIdSpan.textContent = id; // Display the ID on the page
-        });
-
-        const messagesDiv = document.getElementById('messages');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-
-        // Function to append messages to the chat window
-        function appendMessage(message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        // Handle incoming connections
-        peer.on('connection', conn => {
-            conn.on('data', data => {
-                appendMessage(`Peer: ${data}`);
-            });
-
-            conn.on('open', () => {
-                sendButton.addEventListener('click', () => {
-                    const message = messageInput.value;
-                    conn.send(message);
-                    appendMessage(`You: ${message}`);
-                    messageInput.value = '';
-                });
-            });
-        });
-
-        // Function to connect to another peer
-        function connectToPeer(peerId) {
-            const conn = peer.connect(peerId);
-            conn.on('open', () => {
-                sendButton.addEventListener('click', () => {
-                    const message = messageInput.value;
-                    conn.send(message);
-                    appendMessage(`You: ${message}`);
-                    messageInput.value = '';
-                });
-            });
-
-            conn.on('data', data => {
-                appendMessage(`Peer: ${data}`);
-            });
-        }
-
-        // Prompt user for peer ID to connect to
-        const peerId = prompt('Enter the ID of the peer to connect to:');
-        if (peerId) {
-            connectToPeer(peerId);
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
+    <script src="chat.js"></script>
 </body>
 </html>
+
